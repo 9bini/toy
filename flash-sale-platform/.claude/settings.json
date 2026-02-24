@@ -4,11 +4,17 @@
       "Bash(./gradlew *)",
       "Bash(docker compose *)",
       "Bash(docker *)",
+      "Bash(docker logs *)",
+      "Bash(docker exec *)",
       "Bash(gradle *)",
       "Bash(git *)",
       "Bash(curl *)",
       "Bash(k6 *)",
       "Bash(chmod *)",
+      "Bash(redis-cli *)",
+      "Bash(psql *)",
+      "Bash(lsof *)",
+      "Bash(netstat *)",
       "Read",
       "Edit",
       "Write",
@@ -24,6 +30,28 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-commit.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-code-quality.sh"
           }
         ]
       }

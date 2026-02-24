@@ -21,3 +21,17 @@ if command -v java &> /dev/null; then
   JAVA_VERSION=$(java -version 2>&1 | head -n 1)
   echo "Java: $JAVA_VERSION"
 fi
+
+# Memory 시스템 상태 안내
+MEMORY_DIR="$HOME/.claude/projects/-Users-taekyun-Documents-IdeaProjects-toy/memory"
+if [ -d "$MEMORY_DIR" ] && [ -f "$MEMORY_DIR/MEMORY.md" ]; then
+  echo "=== 프로젝트 메모리 로드됨 ==="
+  MEMORY_FILES=$(ls "$MEMORY_DIR"/*.md 2>/dev/null | xargs -I {} basename {} | tr '\n' ', ' | sed 's/,$//')
+  echo "파일: $MEMORY_FILES"
+else
+  echo "=== 프로젝트 메모리 미설정 ==="
+fi
+
+# 최근 git 변경사항 요약
+echo "=== 최근 커밋 (5개) ==="
+git -C "$PROJECT_DIR" log --oneline -5 2>/dev/null || echo "git 로그 없음"
