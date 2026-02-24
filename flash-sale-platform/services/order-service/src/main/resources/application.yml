@@ -8,6 +8,15 @@ spring:
     redis:
       host: localhost
       port: 6379
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/flashsale
+    username: flashsale
+    password: flashsale123
+  flyway:
+    url: jdbc:postgresql://localhost:5432/flashsale
+    user: flashsale
+    password: flashsale123
+    locations: classpath:db/migration
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -22,6 +31,13 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
       enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: "com.flashsale.*"
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
 
 management:
   endpoints:
