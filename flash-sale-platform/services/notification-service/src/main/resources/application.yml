@@ -1,13 +1,22 @@
 server:
   port: 8084
+  shutdown: graceful
 
 spring:
   application:
     name: notification-service
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   data:
     redis:
       host: localhost
       port: 6379
+      timeout: 2s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 4
+          min-idle: 2
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -24,11 +33,31 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
 
+# Resilience4j: 외부 알림 API (Push, SMS 등)에 서킷 브레이커
+resilience4j:
+  circuitbreaker:
+    instances:
+      notification-api:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 50
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 5
+        minimum-number-of-calls: 10
+  retry:
+    instances:
+      notification-send:
+        max-attempts: 3
+        wait-duration: 2s
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
   metrics:
     export:
       prometheus:

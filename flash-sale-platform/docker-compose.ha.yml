@@ -1,0 +1,183 @@
+# Flash Sale Platform - 고가용성(HA) 오버레이 설정
+#
+# 사용법: docker compose -f docker-compose.yml -f docker-compose.ha.yml up -d
+#
+# 이 파일은 개발용 단일 인스턴스 설정을 운영 수준 이중화 구성으로 확장합니다:
+# - Redis: Primary + Replica + Sentinel 3노드 (자동 페일오버)
+# - Kafka: 3브로커 클러스터 (replication-factor=3, min.insync.replicas=2)
+# - PostgreSQL: Primary + Read Replica (스트리밍 복제)
+
+services:
+  # ===========================================
+  # Redis HA: Primary-Replica + Sentinel
+  # ===========================================
+  redis:
+    # 개발용 단일 인스턴스를 Primary로 재정의
+    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+
+  redis-replica:
+    image: redis:7.4-alpine
+    container_name: flashsale-redis-replica
+    command: redis-server --replicaof redis 6379 --appendonly yes
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  redis-sentinel-1:
+    image: redis:7.4-alpine
+    container_name: flashsale-sentinel-1
+    command: >
+      sh -c 'cat > /tmp/sentinel.conf << EOF
+      sentinel monitor flashsale-redis redis 6379 2
+      sentinel down-after-milliseconds flashsale-redis 5000
+      sentinel failover-timeout flashsale-redis 10000
+      sentinel parallel-syncs flashsale-redis 1
+      EOF
+      redis-sentinel /tmp/sentinel.conf'
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  redis-sentinel-2:
+    image: redis:7.4-alpine
+    container_name: flashsale-sentinel-2
+    command: >
+      sh -c 'cat > /tmp/sentinel.conf << EOF
+      sentinel monitor flashsale-redis redis 6379 2
+      sentinel down-after-milliseconds flashsale-redis 5000
+      sentinel failover-timeout flashsale-redis 10000
+      sentinel parallel-syncs flashsale-redis 1
+      EOF
+      redis-sentinel /tmp/sentinel.conf'
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  redis-sentinel-3:
+    image: redis:7.4-alpine
+    container_name: flashsale-sentinel-3
+    command: >
+      sh -c 'cat > /tmp/sentinel.conf << EOF
+      sentinel monitor flashsale-redis redis 6379 2
+      sentinel down-after-milliseconds flashsale-redis 5000
+      sentinel failover-timeout flashsale-redis 10000
+      sentinel parallel-syncs flashsale-redis 1
+      EOF
+      redis-sentinel /tmp/sentinel.conf'
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===========================================
+  # Kafka HA: 3브로커 클러스터
+  # ===========================================
+  kafka:
+    # 기존 브로커를 브로커1로 재정의
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093,2@kafka-2:9093,3@kafka-3:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      # HA 설정: replication=3, min ISR=2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+
+  kafka-2:
+    image: apache/kafka:3.8.1
+    container_name: flashsale-kafka-2
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093,2@kafka-2:9093,3@kafka-3:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    volumes:
+      - kafka-2-data:/tmp/kraft-combined-logs
+    restart: unless-stopped
+
+  kafka-3:
+    image: apache/kafka:3.8.1
+    container_name: flashsale-kafka-3
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093,2@kafka-2:9093,3@kafka-3:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    volumes:
+      - kafka-3-data:/tmp/kraft-combined-logs
+    restart: unless-stopped
+
+  # ===========================================
+  # PostgreSQL HA: Primary + Read Replica
+  # ===========================================
+  postgres:
+    # Primary에 WAL 스트리밍 복제 설정 추가
+    command: >
+      postgres
+        -c wal_level=replica
+        -c max_wal_senders=3
+        -c max_replication_slots=3
+        -c hot_standby=on
+    environment:
+      POSTGRES_DB: flashsale
+      POSTGRES_USER: flashsale
+      POSTGRES_PASSWORD: flashsale123
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+
+  postgres-replica:
+    image: postgres:16-alpine
+    container_name: flashsale-postgres-replica
+    ports:
+      - "5433:5432"
+    environment:
+      PGUSER: flashsale
+      PGPASSWORD: flashsale123
+    command: >
+      bash -c "
+        until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=postgres --port=5432
+        do
+          echo 'Waiting for primary...'
+          sleep 2
+        done
+        chmod 0700 /var/lib/postgresql/data
+        postgres
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - postgres-replica-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  kafka-2-data:
+  kafka-3-data:
+  postgres-replica-data:

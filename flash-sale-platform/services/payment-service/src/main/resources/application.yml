@@ -1,17 +1,31 @@
 server:
   port: 8083
+  shutdown: graceful
 
 spring:
   application:
     name: payment-service
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   data:
     redis:
       host: localhost
       port: 6379
+      timeout: 2s
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 4
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/flashsale
     username: flashsale
     password: flashsale123
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
+      validation-query: SELECT 1
   flyway:
     url: jdbc:postgresql://localhost:5432/flashsale
     user: flashsale
@@ -23,8 +37,11 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
+      retries: 3
       properties:
         enable.idempotence: true
+        retry.backoff.ms: 500
+        max.in.flight.requests.per.connection: 5
     consumer:
       group-id: payment-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -39,11 +56,43 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
 
+# Resilience4j: 결제 API는 서킷 브레이커 + 재시도 필수
+resilience4j:
+  circuitbreaker:
+    instances:
+      payment-api:
+        sliding-window-type: TIME_BASED
+        sliding-window-size: 30
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 15s
+        permitted-number-of-calls-in-half-open-state: 5
+        minimum-number-of-calls: 10
+        slow-call-duration-threshold: 3s
+        slow-call-rate-threshold: 80
+      payment-db:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 50
+        failure-rate-threshold: 60
+        wait-duration-in-open-state: 15s
+        permitted-number-of-calls-in-half-open-state: 5
+        minimum-number-of-calls: 10
+  retry:
+    instances:
+      payment-api:
+        max-attempts: 2
+        wait-duration: 1s
+      kafka-produce:
+        max-attempts: 3
+        wait-duration: 500ms
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
   metrics:
     export:
       prometheus:

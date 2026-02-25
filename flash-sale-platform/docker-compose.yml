@@ -1,6 +1,21 @@
-version: '3.8'
-
 services:
+  # ===========================================
+  # Nginx - L7 리버스 프록시 + Rate Limiting + 로드밸런싱
+  # ===========================================
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: flashsale-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+
   # ===========================================
   # Redis - 캐시, 분산 락, 대기열, Rate Limiting
   # ===========================================
@@ -11,12 +26,15 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    # appendonly: AOF 영속성, maxmemory: 개발 환경 256MB 제한
+    # 운영 환경에서는 docker-compose.ha.yml로 Sentinel 구성 사용
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   # ===========================================
   # Kafka (KRaft 모드) - 이벤트 스트리밍
@@ -35,6 +53,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      # 개발 환경: 단일 브로커이므로 replication=1
+      # 운영 환경에서는 docker-compose.ha.yml로 3브로커 + replication=3 사용
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -48,6 +68,7 @@ services:
       timeout: 10s
       retries: 10
       start_period: 30s
+    restart: unless-stopped
 
   # ===========================================
   # PostgreSQL - 주문/결제 영속 데이터
@@ -68,6 +89,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   # ===========================================
   # Prometheus - 메트릭 수집
@@ -86,6 +108,7 @@ services:
     depends_on:
       - redis
       - kafka
+    restart: unless-stopped
 
   # ===========================================
   # Grafana - 모니터링 대시보드
@@ -102,6 +125,7 @@ services:
       - grafana-data:/var/lib/grafana
     depends_on:
       - prometheus
+    restart: unless-stopped
 
 volumes:
   redis-data:

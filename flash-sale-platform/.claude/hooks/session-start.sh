@@ -22,13 +22,20 @@ if command -v java &> /dev/null; then
   echo "Java: $JAVA_VERSION"
 fi
 
-# Memory 시스템 상태 안내
-MEMORY_DIR="$HOME/.claude/projects/-Users-taekyun-Documents-IdeaProjects-toy/memory"
-if [ -d "$MEMORY_DIR" ] && [ -f "$MEMORY_DIR/MEMORY.md" ]; then
-  echo "=== 프로젝트 메모리 로드됨 ==="
-  MEMORY_FILES=$(ls "$MEMORY_DIR"/*.md 2>/dev/null | xargs -I {} basename {} | tr '\n' ', ' | sed 's/,$//')
-  echo "파일: $MEMORY_FILES"
-else
+# Memory 시스템 상태 안내 (환경 독립적으로 탐색)
+MEMORY_FOUND=false
+if [ -d "$HOME/.claude/projects" ]; then
+  for CANDIDATE_DIR in "$HOME/.claude/projects"/*/memory; do
+    if [ -d "$CANDIDATE_DIR" ] && [ -f "$CANDIDATE_DIR/MEMORY.md" ]; then
+      echo "=== 프로젝트 메모리 로드됨 ==="
+      MEMORY_FILES=$(ls "$CANDIDATE_DIR"/*.md 2>/dev/null | xargs -I {} basename {} | tr '\n' ', ' | sed 's/,$//')
+      echo "파일: $MEMORY_FILES"
+      MEMORY_FOUND=true
+      break
+    fi
+  done
+fi
+if [ "$MEMORY_FOUND" = false ]; then
   echo "=== 프로젝트 메모리 미설정 ==="
 fi
 

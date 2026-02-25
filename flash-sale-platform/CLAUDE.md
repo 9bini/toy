@@ -11,14 +11,16 @@ Kotlin + Spring WebFlux + Coroutines 기반 마이크로서비스 아키텍처.
 - **payment-service**: 결제 + Saga 패턴 보상 트랜잭션
 - **notification-service**: 알림 (SSE + Push + 외부 API)
 - **common/domain**: 공유 도메인 모델
-- **common/infrastructure**: 공유 인프라 (Redis, Kafka 설정)
+- **common/infrastructure**: 공유 인프라 (Redis, Kafka, Resilience4j 설정)
+- **infra/nginx**: Nginx L7 리버스 프록시 (Rate Limiting, 로드밸런싱, SSE 프록시)
 
 ## 빌드 & 실행
 - 전체 빌드: `./gradlew build`
 - 특정 서비스: `./gradlew :services:order-service:build`
 - 전체 테스트: `./gradlew test`
 - 특정 테스트: `./gradlew :services:order-service:test --tests "*.OrderServiceTest"`
-- 인프라 실행: `docker compose up -d`
+- 인프라 실행 (개발): `docker compose up -d`
+- 인프라 실행 (HA 모드): `docker compose -f docker-compose.yml -f docker-compose.ha.yml up -d`
 - 인프라 종료: `docker compose down`
 - 린트 체크: `./gradlew ktlintCheck`
 - 린트 포맷: `./gradlew ktlintFormat`
@@ -30,6 +32,7 @@ Kotlin + Spring WebFlux + Coroutines 기반 마이크로서비스 아키텍처.
 - Redis 연산은 반드시 Lua Script 또는 Redisson으로 원자성 보장
 - Kafka 메시지는 반드시 멱등성 처리
 - 모든 외부 통신은 `withTimeout` 설정 필수
+- 외부 호출(결제 API, DB 등)에는 Resilience4j 서킷 브레이커 적용
 - sealed class / sealed interface로 에러 타입 정의
 - 문서와 주석은 한국어, 코드(변수명/클래스명/함수명)는 영어
 
@@ -149,6 +152,9 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 
 | 날짜 | 이슈 | 원인 | 해결 패턴 |
 |------|------|------|-----------|
+| 2026-02-25 | 이중화/HA 미고려 | 개발 환경 단일 인스턴스로 설계 | docker-compose.ha.yml 오버레이로 분리, Resilience4j 서킷 브레이커 추가 |
+| 2026-02-25 | 트래픽 수신 계층 부재 | Nginx 없이 서비스 직접 노출 | Nginx 리버스 프록시 추가 (Rate Limiting + SSE 프록시 + 로드밸런싱) |
+| 2026-02-25 | hooks 환경 의존성 | session-start.sh 경로 하드코딩, jq 미설치 환경 | 동적 경로 탐색, jq/python3/grep fallback 체인 |
 
 ---
 
@@ -197,6 +203,10 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ### 동시성/정합성
 - [ ] Redis 연산이 원자적인가?
 - [ ] Kafka 메시지가 멱등하게 처리되는가?
+
+### 안정성/이중화
+- [ ] 외부 호출에 Resilience4j 서킷 브레이커가 적용되었는가?
+- [ ] 장애 시 fallback/보상 로직이 있는가?
 
 ### 가독성
 - [ ] 함수가 30줄 이내인가?

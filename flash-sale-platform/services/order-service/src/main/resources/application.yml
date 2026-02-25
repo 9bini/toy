@@ -1,17 +1,31 @@
 server:
   port: 8082
+  shutdown: graceful
 
 spring:
   application:
     name: order-service
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   data:
     redis:
       host: localhost
       port: 6379
+      timeout: 2s
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 4
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/flashsale
     username: flashsale
     password: flashsale123
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
+      validation-query: SELECT 1
   flyway:
     url: jdbc:postgresql://localhost:5432/flashsale
     user: flashsale
@@ -23,8 +37,11 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: all
+      retries: 3
       properties:
         enable.idempotence: true
+        retry.backoff.ms: 500
+        max.in.flight.requests.per.connection: 5
     consumer:
       group-id: order-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -39,11 +56,38 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
 
+# Resilience4j: 재고 차감, DB 접근에 서킷 브레이커 적용
+resilience4j:
+  circuitbreaker:
+    instances:
+      stock-decrement:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 100
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 10
+        minimum-number-of-calls: 20
+      order-db:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 50
+        failure-rate-threshold: 60
+        wait-duration-in-open-state: 15s
+        permitted-number-of-calls-in-half-open-state: 5
+        minimum-number-of-calls: 10
+  retry:
+    instances:
+      kafka-produce:
+        max-attempts: 3
+        wait-duration: 500ms
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
   metrics:
     export:
       prometheus:
