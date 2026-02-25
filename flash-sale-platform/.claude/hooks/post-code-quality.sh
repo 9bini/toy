@@ -2,7 +2,15 @@
 set -euo pipefail
 
 INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+
+# jq → python3 → grep 순서로 fallback하여 file_path 추출
+if command -v jq &> /dev/null; then
+  FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+elif command -v python3 &> /dev/null; then
+  FILE_PATH=$(echo "$INPUT" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('file_path',''))" 2>/dev/null || echo "")
+else
+  FILE_PATH=$(echo "$INPUT" | grep -oP '"file_path"\s*:\s*"\K[^"]+' 2>/dev/null || echo "")
+fi
 
 # .kt 파일만 대상
 if [[ -z "$FILE_PATH" || "$FILE_PATH" != *.kt ]]; then
