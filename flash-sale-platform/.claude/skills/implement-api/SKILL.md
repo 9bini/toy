@@ -9,8 +9,8 @@ $ARGUMENTS API를 구현하세요.
 ## 구현 순서
 
 ### 1. 설계 문서 확인
-- `docs/{service-name}/DESIGN.md`에서 해당 API 스펙 확인
-- 없으면 먼저 `/design-service`로 설계 진행
+- `docs/{service-name}/DESIGN.md`가 있으면 API 스펙 확인
+- 없으면 사용자에게 확인 후, 필요 시 `/design-service`로 설계 진행
 
 ### 2. Domain 레이어
 - 엔티티, 밸류 오브젝트 생성

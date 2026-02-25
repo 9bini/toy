@@ -40,7 +40,7 @@ $ARGUMENTS 서비스를 DDD 기반으로 설계하세요.
 - DLQ 전략
 
 ## 출력
-- `docs/{service-name}/DESIGN.md`에 설계 문서 작성
+- `docs/{service-name}/DESIGN.md`에 설계 문서 작성 (docs 디렉토리가 없으면 생성)
 - 패키지 구조와 주요 클래스 목록
 - Kafka 토픽 명세
 - 시퀀스 다이어그램 (Mermaid 형식)
