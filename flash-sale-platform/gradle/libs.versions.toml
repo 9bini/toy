@@ -19,7 +19,7 @@ resilience4j = "2.2.0"
 redisson = "4.2.0"
 
 # Database
-r2dbc-postgresql = "1.0.7.RELEASE"
+r2dbc-postgresql = "1.1.1.RELEASE"
 flyway = "10.22.0"
 postgresql-jdbc = "42.7.10"
 
