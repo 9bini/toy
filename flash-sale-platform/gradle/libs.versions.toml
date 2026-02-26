@@ -13,7 +13,7 @@ kotlin-logging = "7.0.3"
 logstash-logback = "8.0"
 
 # Resilience
-resilience4j = "2.2.0"
+resilience4j = "2.3.0"
 
 # Redis
 redisson = "3.40.2"
