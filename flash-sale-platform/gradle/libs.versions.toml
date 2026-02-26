@@ -21,7 +21,7 @@ redisson = "3.40.2"
 # Database
 r2dbc-postgresql = "1.0.7.RELEASE"
 flyway = "10.22.0"
-postgresql-jdbc = "42.7.4"
+postgresql-jdbc = "42.7.10"
 
 # Testing
 kotest = "5.9.1"
