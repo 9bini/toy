@@ -1,0 +1,52 @@
+# PR 변경 경로 기반 자동 라벨
+infra:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "flash-sale-platform/build.gradle.kts"
+          - "flash-sale-platform/settings.gradle.kts"
+          - "flash-sale-platform/gradle/**"
+          - "flash-sale-platform/gradle.properties"
+
+common:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "flash-sale-platform/common/**"
+
+service/gateway:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "flash-sale-platform/services/gateway/**"
+
+service/queue:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "flash-sale-platform/services/queue-service/**"
+
+service/order:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "flash-sale-platform/services/order-service/**"
+
+service/payment:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "flash-sale-platform/services/payment-service/**"
+
+service/notification:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "flash-sale-platform/services/notification-service/**"
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "flash-sale-platform/tests/**"
+          - "**/*Test.kt"
+          - "**/*Spec.kt"
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "docs/**"
