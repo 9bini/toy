@@ -1,15 +1,15 @@
 [versions]
 # Language & Framework
-kotlin = "2.0.21"
+kotlin = "2.3.10"
 spring-boot = "3.4.1"
 spring-dependency-management = "1.1.7"
 ktlint-gradle = "12.3.0"
 
 # Coroutines
-coroutines = "1.9.0"
+coroutines = "1.10.2"
 
 # Logging
-kotlin-logging = "7.0.3"
+kotlin-logging = "7.0.13"
 logstash-logback = "9.0"
 
 # Resilience
@@ -26,7 +26,7 @@ postgresql-jdbc = "42.7.10"
 # Testing
 kotest = "6.1.4"
 mockk = "1.14.9"
-testcontainers = "1.21.4"
+testcontainers = "2.0.3"
 redis-testcontainers = "2.2.4"
 kotest-extensions-spring = "1.3.0"
 
@@ -65,10 +65,10 @@ kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest"
 kotest-extensions-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotest-extensions-spring" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
-testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
-testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
-testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
-testcontainers-r2dbc = { module = "org.testcontainers:r2dbc", version.ref = "testcontainers" }
+testcontainers-kafka = { module = "org.testcontainers:testcontainers-kafka", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
+testcontainers-r2dbc = { module = "org.testcontainers:testcontainers-r2dbc", version.ref = "testcontainers" }
 redis-testcontainers = { module = "com.redis:testcontainers-redis", version.ref = "redis-testcontainers" }
 
 [bundles]

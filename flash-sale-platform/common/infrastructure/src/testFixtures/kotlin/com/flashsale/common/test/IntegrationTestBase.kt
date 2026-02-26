@@ -3,8 +3,8 @@ package com.flashsale.common.test
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.KafkaContainer
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.kafka.KafkaContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 
 /**
@@ -34,13 +34,13 @@ abstract class IntegrationTestBase {
         // --- Kafka (KRaft 모드) ---
         @JvmStatic
         val kafka: KafkaContainer =
-            KafkaContainer(DockerImageName.parse("apache/kafka:3.8.1"))
+            KafkaContainer("apache/kafka:3.8.1")
                 .apply { start() }
 
         // --- PostgreSQL ---
         @JvmStatic
         val postgres: PostgreSQLContainer<*> =
-            PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
+            PostgreSQLContainer("postgres:16-alpine")
                 .withDatabaseName("flashsale")
                 .withUsername("flashsale")
                 .withPassword("flashsale123")
