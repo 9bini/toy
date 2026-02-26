@@ -27,11 +27,6 @@ spring:
       enable-auto-commit: false
       properties:
         spring.json.trusted.packages: "com.flashsale.*"
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-    deserialization:
-      fail-on-unknown-properties: false
 
 # Resilience4j: 외부 알림 API (Push, SMS 등)에 서킷 브레이커
 resilience4j:

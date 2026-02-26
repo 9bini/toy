@@ -50,11 +50,6 @@ spring:
       enable-auto-commit: false
       properties:
         spring.json.trusted.packages: "com.flashsale.*"
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-    deserialization:
-      fail-on-unknown-properties: false
 
 # Resilience4j: 재고 차감, DB 접근에 서킷 브레이커 적용
 resilience4j:

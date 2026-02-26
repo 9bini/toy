@@ -17,11 +17,6 @@ spring:
           max-active: 32
           max-idle: 16
           min-idle: 8
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-    deserialization:
-      fail-on-unknown-properties: false
 
 # Resilience4j: 대기열 서비스는 Redis 장애 시 서킷 브레이커 적용
 resilience4j:

@@ -23,26 +23,28 @@ import org.testcontainers.utility.DockerImageName
  * 모든 테스트 클래스가 공유한다 (테스트 속도 최적화).
  */
 abstract class IntegrationTestBase {
-
     companion object {
         // --- Redis ---
         @JvmStatic
-        val redis: GenericContainer<*> = GenericContainer(DockerImageName.parse("redis:7.4-alpine"))
-            .withExposedPorts(6379)
-            .apply { start() }
+        val redis: GenericContainer<*> =
+            GenericContainer(DockerImageName.parse("redis:7.4-alpine"))
+                .withExposedPorts(6379)
+                .apply { start() }
 
         // --- Kafka (KRaft 모드) ---
         @JvmStatic
-        val kafka: KafkaContainer = KafkaContainer(DockerImageName.parse("apache/kafka:3.8.1"))
-            .apply { start() }
+        val kafka: KafkaContainer =
+            KafkaContainer(DockerImageName.parse("apache/kafka:3.8.1"))
+                .apply { start() }
 
         // --- PostgreSQL ---
         @JvmStatic
-        val postgres: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
-            .withDatabaseName("flashsale")
-            .withUsername("flashsale")
-            .withPassword("flashsale123")
-            .apply { start() }
+        val postgres: PostgreSQLContainer<*> =
+            PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
+                .withDatabaseName("flashsale")
+                .withUsername("flashsale")
+                .withPassword("flashsale123")
+                .apply { start() }
 
         @JvmStatic
         @DynamicPropertySource

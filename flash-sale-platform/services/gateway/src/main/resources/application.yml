@@ -17,11 +17,6 @@ spring:
           max-active: 16
           max-idle: 8
           min-idle: 4
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-    deserialization:
-      fail-on-unknown-properties: false
 
 # Resilience4j: Rate Limiter (앱 레벨 2차 방어선, Nginx가 1차)
 resilience4j:

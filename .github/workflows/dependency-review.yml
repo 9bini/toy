@@ -1,0 +1,25 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # critical/high 취약점이 있으면 PR 차단
+          fail-on-severity: high
+          comment-summary-in-pr: always
+          license-check: true
+          # 허용하지 않는 라이선스 (GPL 계열 차단)
+          deny-licenses: GPL-2.0, GPL-3.0

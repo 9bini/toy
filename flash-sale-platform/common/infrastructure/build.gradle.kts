@@ -24,6 +24,7 @@ dependencies {
     api("org.springframework.kafka:spring-kafka")
     api("com.fasterxml.jackson.module:jackson-module-kotlin")
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    api(libs.jackson.module.blackbird)
 
     // Resilience4j: 서킷 브레이커, Rate Limiter, Retry
     api(libs.bundles.resilience4j)

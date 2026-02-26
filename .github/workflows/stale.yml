@@ -1,0 +1,39 @@
+name: Stale Issues & PRs
+
+on:
+  schedule:
+    # 매일 09:00 KST
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # Issue 설정
+          stale-issue-message: >
+            이 이슈가 30일간 활동이 없어 stale로 표시되었습니다.
+            7일 내 응답이 없으면 자동으로 닫힙니다.
+          close-issue-message: >
+            활동이 없어 자동으로 닫힙니다. 필요하면 다시 열어주세요.
+          days-before-issue-stale: 30
+          days-before-issue-close: 7
+          stale-issue-label: stale
+          exempt-issue-labels: pinned,keep
+
+          # PR 설정
+          stale-pr-message: >
+            이 PR이 14일간 활동이 없어 stale로 표시되었습니다.
+            7일 내 업데이트가 없으면 자동으로 닫힙니다.
+          close-pr-message: >
+            활동이 없어 자동으로 닫힙니다. 필요하면 다시 열어주세요.
+          days-before-pr-stale: 14
+          days-before-pr-close: 7
+          stale-pr-label: stale
+          exempt-pr-labels: pinned,keep

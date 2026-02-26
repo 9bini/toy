@@ -2,13 +2,17 @@ name: Flash Sale Platform CI
 
 on:
   push:
-    branches: [main]
     paths:
       - 'flash-sale-platform/**'
   pull_request:
     branches: [main]
     paths:
       - 'flash-sale-platform/**'
+
+# 같은 PR에서 새 push가 오면 이전 실행을 취소 (리소스 절약)
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -32,16 +36,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Lint check (ktlint)
-        run: ./gradlew ktlintCheck
-
-      - name: Compile
-        run: ./gradlew compileKotlin
-
-      - name: Test
-        run: ./gradlew test
-
-      - name: Build
+      - name: Build (lint + compile + test)
         run: ./gradlew build
 
       - name: Upload test reports

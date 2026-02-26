@@ -1,0 +1,37 @@
+version: 2
+
+updates:
+  # Gradle 의존성 자동 업데이트
+  - package-ecosystem: "gradle"
+    directory: "/flash-sale-platform"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "gradle"
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "org.jetbrains.kotlinx*"
+      testing:
+        patterns:
+          - "io.kotest*"
+          - "io.mockk*"
+          - "org.testcontainers*"
+
+  # GitHub Actions 버전 자동 업데이트
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"

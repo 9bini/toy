@@ -42,4 +42,25 @@ subprojects {
         "testImplementation"(rootProject.libs.mockk)
         "testImplementation"(rootProject.libs.coroutines.test)
     }
+
+    // Spring Boot 모듈: 컴파일 타임 컴포넌트 인덱싱으로 시작 시간 단축
+    plugins.withId("org.springframework.boot") {
+        dependencies {
+            "annotationProcessor"("org.springframework:spring-context-indexer")
+        }
+    }
+
+    // 서비스 모듈 공통 의존성 (actuator, reactor, prometheus, 테스트)
+    if (project.path.startsWith(":services:")) {
+        dependencies {
+            "implementation"("org.springframework.boot:spring-boot-starter-actuator")
+            "implementation"("io.projectreactor.kotlin:reactor-kotlin-extensions")
+            "implementation"("io.micrometer:micrometer-registry-prometheus")
+
+            "testImplementation"("org.springframework.boot:spring-boot-starter-test") {
+                (this as ExternalModuleDependency).exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+            }
+            "testImplementation"("io.projectreactor:reactor-test")
+        }
+    }
 }
