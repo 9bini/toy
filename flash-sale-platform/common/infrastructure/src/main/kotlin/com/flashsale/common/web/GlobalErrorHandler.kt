@@ -64,12 +64,13 @@ class GlobalErrorHandler(
             logger.warn { "[${request.method()}] ${request.path()} → $status: $message" }
         }
 
-        val errorResponse = ErrorResponse(
-            code = code,
-            message = message,
-            requestId = requestId,
-            timestamp = Instant.now(),
-        )
+        val errorResponse =
+            ErrorResponse(
+                code = code,
+                message = message,
+                requestId = requestId,
+                timestamp = Instant.now(),
+            )
 
         return ServerResponse.status(status)
             .contentType(MediaType.APPLICATION_JSON)
@@ -92,7 +93,10 @@ class GlobalErrorHandler(
             else -> "INTERNAL_ERROR"
         }
 
-    private fun resolveMessage(error: Throwable, status: HttpStatus): String =
+    private fun resolveMessage(
+        error: Throwable,
+        status: HttpStatus,
+    ): String =
         when {
             error is ResponseStatusException -> error.reason ?: status.reasonPhrase
             error is TimeoutCancellationException -> "요청 처리 시간 초과"
