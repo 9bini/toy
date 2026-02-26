@@ -10,7 +10,7 @@ coroutines = "1.9.0"
 
 # Logging
 kotlin-logging = "7.0.3"
-logstash-logback = "8.0"
+logstash-logback = "9.0"
 
 # Resilience
 resilience4j = "2.2.0"
