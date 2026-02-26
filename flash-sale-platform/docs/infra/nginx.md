@@ -298,7 +298,7 @@ location = /api/orders { }   # 매칭 안 됨 (정확히 /api/orders만)
 ### Rate Limiting 2단계 방어
 
 ```
-요청 → [Nginx Rate Limit]  → [서비스 Rate Limit (Resilience4j)]
+요청 → [Nginx Rate Limit]  → [서비스 Rate Limit (Gateway)]
         IP 기반, 초당 N건      사용자/API 기반, 세밀한 제어
         1차 방어선 (거친 필터)    2차 방어선 (정밀 필터)
 ```

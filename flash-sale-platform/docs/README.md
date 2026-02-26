@@ -31,7 +31,6 @@
 | 이벤트 | Apache Kafka | 3.8.1 | 서비스간 비동기 이벤트 통신 |
 | DB | PostgreSQL + R2DBC | 16 / 1.0.7 | 비동기 관계형 데이터베이스 |
 | DB 마이그레이션 | Flyway | 10.22.0 | 스키마 버전 관리 |
-| 장애 대응 | Resilience4j | 2.2.0 | 서킷 브레이커, 재시도, Rate Limiter |
 | 분산 트랜잭션 | Saga Pattern | - | 보상 트랜잭션으로 일관성 유지 |
 | 리버스 프록시 | Nginx | 1.27 | Rate Limiting, 로드밸런싱, SSE 프록시 |
 | 컨테이너 | Docker Compose | - | 로컬 개발 환경 인프라 |
@@ -58,8 +57,7 @@
 6. **[R2DBC + PostgreSQL](06-r2dbc-postgresql.md)** - 비동기 DB 연결
 
 ### Phase 4: 안정성 & 패턴
-7. **[Resilience4j 장애 대응](07-resilience4j.md)** - 서비스 안정성 확보
-8. **[Saga 패턴](08-saga-pattern.md)** - 분산 환경의 트랜잭션
+7. **[Saga 패턴](08-saga-pattern.md)** - 분산 환경의 트랜잭션
 
 ### Phase 5: 운영 & 품질
 9. **[테스트 전략](09-testing.md)** - Kotest, MockK, Testcontainers
@@ -76,7 +74,7 @@
 - **재고 정합성**: 1,000개만 정확히 판매 → Redis Lua Script (원자적 연산)
 - **공정한 순서**: 먼저 온 사람이 먼저 구매 → Redis Sorted Set (대기열)
 - **결제 실패 시 복구**: 재고 복원 필요 → Saga 패턴 (보상 트랜잭션)
-- **서비스 장애 전파 방지**: 하나가 죽어도 전체는 유지 → Resilience4j (서킷 브레이커)
+- **서비스 장애 전파 방지**: 하나가 죽어도 전체는 유지 → withTimeout + 재시도 패턴
 - **봇/매크로 차단**: 불공정 접근 방지 → Nginx + Redis Rate Limiting
 
 ---
@@ -102,7 +100,6 @@
 | **[Kafka Consumer 추가](guides/add-kafka-consumer.md)** | 이벤트 수신 + 멱등성 + DLQ | payment-service의 주문 이벤트 수신 |
 | **[Redis 연산 추가](guides/add-redis-operation.md)** | Lua Script, 분산 락, 대기열, Rate Limiting | 4가지 Redis 패턴 |
 | **[DB 엔티티 추가](guides/add-db-entity.md)** | Flyway 마이그레이션 + R2DBC 엔티티 | order-service의 orders 테이블 |
-| **[서킷 브레이커/재시도 추가](guides/add-resilience-pattern.md)** | Resilience4j 설정 + Prometheus 메트릭 | payment-service의 결제 API 호출 |
 | **[Saga 패턴 구현](guides/add-saga-pattern.md)** | 분산 트랜잭션 + 보상 트랜잭션 | 주문→재고→결제 플로우 |
 | **[테스트 작성](guides/add-test.md)** | 단위/통합/E2E 테스트 | Kotest + MockK + Testcontainers |
 
@@ -133,8 +130,7 @@
 | [Flyway](libs/flyway.md) | flyway-core 10.22.0 | DB 마이그레이션, 파일 규칙, R2DBC 환경 설정 |
 | [Redisson](libs/redisson.md) | redisson 3.40.2 | 분산 락, RLock API, Watchdog, 재진입 |
 | [Spring Kafka](libs/spring-kafka.md) | spring-kafka | KafkaTemplate, @KafkaListener, 에러 처리, DLQ |
-| [Resilience4j](libs/resilience4j.md) | resilience4j 2.2.0 | Circuit Breaker, Retry, Rate Limiter |
-| [Jackson](libs/jackson.md) | jackson-module-kotlin + jsr310 | JSON 직렬화/역직렬화, data class, 날짜 타입 |
+| [Jackson](libs/jackson.md) | jackson-module-kotlin | JSON 직렬화/역직렬화, data class, 날짜 타입 |
 | [kotlin-logging](libs/kotlin-logging.md) | kotlin-logging 7.0.3 + logstash | 로그 레벨, MDC, JSON 로그 |
 | [ktlint](libs/ktlint.md) | ktlint 12.1.2 | 코드 스타일 검사/수정, Gradle 명령어 |
 | [Micrometer + Actuator](libs/micrometer-actuator.md) | Micrometer + Actuator | 메트릭 API, Counter/Timer/Gauge, Prometheus 연동 |

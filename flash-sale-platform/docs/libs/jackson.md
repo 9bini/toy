@@ -137,19 +137,15 @@ data class Order(val id: String, val status: String)
 
 **해결**: jackson-module-kotlin을 등록하면 Kotlin 주 생성자로 역직렬화.
 
-### 5.2 jackson-datatype-jsr310
+### 5.2 날짜/시간 타입 처리
 
-Java 8 날짜/시간 타입 (`Instant`, `LocalDateTime`)을 올바르게 처리하는 모듈.
-
-**문제**: 기본 Jackson은 Instant를 이상하게 직렬화한다.
+Jackson 3에서는 `java.time.*` (`Instant`, `LocalDateTime`) 지원이 `jackson-databind`에 통합되었다.
+별도의 `jackson-datatype-jsr310` 의존성이 필요 없다.
 
 ```kotlin
 data class Order(val createdAt: Instant)
 
-// jsr310 없이:
-// {"createdAt": {"epochSecond": 1708900000, "nano": 0}}   ← 읽기 어려움
-
-// jsr310 있으면:
+// Jackson 3 기본 출력:
 // {"createdAt": "2026-02-25T10:00:00Z"}   ← ISO 8601 (표준)
 ```
 
@@ -157,11 +153,10 @@ data class Order(val createdAt: Instant)
 
 ```kotlin
 // common/infrastructure/build.gradle.kts
-api("com.fasterxml.jackson.module:jackson-module-kotlin")
-api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+api("tools.jackson.module:jackson-module-kotlin")
 ```
 
-Spring Boot가 두 모듈을 자동 감지하여 ObjectMapper에 등록한다.
+Spring Boot가 모듈을 자동 감지하여 ObjectMapper에 등록한다.
 
 ---
 
@@ -174,7 +169,7 @@ Spring Boot가 두 모듈을 자동 감지하여 ObjectMapper에 등록한다.
 // → "Cannot construct instance of Order (no Creators)"
 
 // ✅ 의존성 추가만 하면 Spring Boot가 자동 등록
-implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+implementation("tools.jackson.module:jackson-module-kotlin")
 ```
 
 ### Unknown properties 에러
@@ -198,7 +193,7 @@ data class Order(val id: String, val status: String)
 | 모듈 | 해결하는 문제 |
 |------|-------------|
 | `jackson-module-kotlin` | data class 기본 생성자 없는 문제 |
-| `jackson-datatype-jsr310` | Instant 등 날짜 타입 직렬화 형식 |
+| `jackson-databind` (내장) | Instant 등 날짜 타입 직렬화 (Jackson 3에서 통합) |
 
 | 사용처 | 변환 |
 |--------|------|

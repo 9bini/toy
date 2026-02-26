@@ -249,11 +249,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket[5
 # 5. JVM 힙 메모리 사용률 (%)
 jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"} * 100
 
-# 6. 서킷 브레이커 상태
-resilience4j_circuitbreaker_state{name="paymentApi"}
-# 0=CLOSED, 1=OPEN, 2=HALF_OPEN
-
-# 7. 활성 스레드 수
+# 6. 활성 스레드 수
 jvm_threads_live_threads
 
 # 8. GC 일시 중지 시간

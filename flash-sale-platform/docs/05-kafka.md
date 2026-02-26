@@ -239,7 +239,7 @@ Broker 3: [Partition 0 Follower] [Partition 1 Follower]
 | 역할 | 메시지를 토픽에 보냄 | 토픽에서 메시지를 읽음 |
 | 이 프로젝트 | 주문/결제 이벤트 발행 | 이벤트를 받아 처리 |
 | 핵심 설정 | `acks=all` (안전한 쓰기) | `auto.offset.reset=earliest` |
-| 실패 처리 | 재시도 (Resilience4j) | DLQ로 이동 |
+| 실패 처리 | 재시도 (Kafka RetryTemplate) | DLQ로 이동 |
 
 ---
 

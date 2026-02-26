@@ -223,9 +223,6 @@ http_server_requests_seconds_sum{uri="/api/orders"} 456.78
 # JVM 메모리
 jvm_memory_used_bytes{area="heap"} 268435456
 
-# 서킷 브레이커 상태
-resilience4j_circuitbreaker_state{name="paymentApi"} 0
-
 # Redis 연결 수
 lettuce_command_completion_seconds_count 98765
 ```

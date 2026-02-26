@@ -139,7 +139,7 @@ subprojects {
 | **gateway** | 8080 | Redis Token Bucket | API Gateway, Rate Limiting (앱 레벨) |
 | **queue-service** | 8081 | Redis Sorted Set, SSE | 대기열 관리, 실시간 순번 알림 |
 | **order-service** | 8082 | Redis Lua Script, Redisson, R2DBC | 재고 차감, 주문 생성, 분산 락 |
-| **payment-service** | 8083 | Saga, Resilience4j, R2DBC | 결제 처리, 보상 트랜잭션 |
+| **payment-service** | 8083 | Saga, R2DBC | 결제 처리, 보상 트랜잭션 |
 | **notification-service** | 8084 | Kafka Consumer, SSE | 알림 발송 (이메일, 푸시, SSE) |
 
 ### 서비스 간 통신 흐름
@@ -527,15 +527,6 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
-# Resilience4j (서비스별 커스텀)
-resilience4j:
-  circuitbreaker:
-    instances:
-      {인스턴스명}: { ... }
-  retry:
-    instances:
-      {인스턴스명}: { ... }
-
 # Actuator + Prometheus (전체)
 management:
   endpoints:
@@ -566,6 +557,5 @@ management:
 - [새 Kafka Consumer 추가](guides/add-kafka-consumer.md)
 - [새 Redis 연산 추가](guides/add-redis-operation.md)
 - [새 DB 엔티티 추가](guides/add-db-entity.md)
-- [서킷 브레이커 + 재시도 추가](guides/add-resilience-pattern.md)
 - [Saga 패턴 구현](guides/add-saga-pattern.md)
 - [테스트 작성](guides/add-test.md)

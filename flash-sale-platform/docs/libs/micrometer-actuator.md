@@ -176,7 +176,6 @@ Spring Boot가 자동으로 수집하는 메트릭 (코드 작성 불필요):
 | `jvm_threads_live_threads` | 활성 스레드 수 |
 | `jvm_gc_pause_seconds` | GC 일시 정지 시간 |
 | `process_cpu_usage` | CPU 사용률 |
-| `resilience4j_*` | 서킷 브레이커 상태 (Resilience4j 자동 연동) |
 
 ---
 
