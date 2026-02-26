@@ -16,7 +16,7 @@ logstash-logback = "8.0"
 resilience4j = "2.2.0"
 
 # Redis
-redisson = "3.40.2"
+redisson = "4.2.0"
 
 # Database
 r2dbc-postgresql = "1.0.7.RELEASE"
