@@ -45,6 +45,7 @@ $ARGUMENTS API를 구현하세요.
 @Service
 class PlaceOrderUseCase(
     private val stockPort: StockPort,
+    private val userPort: UserPort,
     private val orderPort: OrderPort,
 ) : PlaceOrderPort {
 
