@@ -28,7 +28,7 @@ class RedisQueueAdapterTest : DescribeSpec() {
     private lateinit var redisTemplate: ReactiveStringRedisTemplate
 
     init {
-        extensions(SpringExtension)
+        extensions(SpringExtension())
 
         beforeEach {
             redisTemplate.delete("queue:waiting:test-sale").block()
