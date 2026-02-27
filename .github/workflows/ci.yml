@@ -39,11 +39,12 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build (lint + compile + test)
-        run: ./gradlew build --stacktrace 2>&1 | tee build-output.txt; exit ${PIPESTATUS[0]}
+        run: ./gradlew build
 
-      - name: Show build error
+      - name: Upload test reports
         if: failure()
-        run: |
-          grep -B2 -A15 'What went wrong\|FAILURE\|FAILED\|BUILD FAILED' build-output.txt | head -40 | while IFS= read -r line; do
-            echo "::error::$line"
-          done
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-reports
+          path: flash-sale-platform/**/build/reports/tests/
+          retention-days: 7
