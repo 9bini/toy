@@ -35,16 +35,25 @@ $ARGUMENTS 코드를 리뷰하세요.
 - [ ] Context switching이 최소화되었는가?
 - [ ] `Dispatchers.IO`가 blocking 코드에만 사용되는가?
 - [ ] Flow 수집이 적절한 스코프에서 이루어지는가?
+- [ ] CancellationException을 삼키지 않는가? (반드시 재던짐)
+- [ ] Thread.sleep, runBlocking, subscribe() 사용하지 않았는가?
+- [ ] 로깅이 람다 구문(`logger.info { }`)을 사용하는가?
 
 ### Kafka
 - [ ] 메시지 발행이 멱등한가?
 - [ ] Consumer가 중복 메시지를 안전하게 처리하는가?
 - [ ] DLQ 설정이 되어있는가?
+- [ ] Producer가 key를 포함하여 전송하는가?
+- [ ] Consumer가 예외를 삼키지 않는가?
+- [ ] `.get()` 대신 `.asDeferred().await()` 사용하는가?
 
 ### Redis
-- [ ] 키 네이밍이 일관적인가?
+- [ ] 키 네이밍이 일관적인가? (`RedisKeys` object 사용)
 - [ ] TTL이 설정되어 있는가?
 - [ ] 메모리 누수 위험이 없는가?
+- [ ] 분산 락의 `finally` + `isHeldByCurrentThread` 패턴이 지켜지는가?
+- [ ] Lua Script의 KEYS/ARGV 분리가 올바른가?
+- [ ] `DEL` 대신 `UNLINK` 사용하는가?
 
 ### 기술 최신성
 - [ ] deprecated API를 사용하지 않는가? (Spring Boot/Kotlin/라이브러리 최신 버전 기준)
