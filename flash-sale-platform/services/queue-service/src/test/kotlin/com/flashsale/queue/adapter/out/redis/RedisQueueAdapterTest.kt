@@ -9,11 +9,17 @@ import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import java.time.Instant
 
 @SpringBootTest
 class RedisQueueAdapterTest : DescribeSpec() {
-    companion object : IntegrationTestBase()
+    companion object : IntegrationTestBase() {
+        @JvmStatic
+        @DynamicPropertySource
+        fun properties(registry: DynamicPropertyRegistry) = registerProperties(registry)
+    }
 
     @Autowired
     private lateinit var adapter: RedisQueueAdapter
