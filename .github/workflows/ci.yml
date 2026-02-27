@@ -44,7 +44,4 @@ jobs:
       - name: Show build error
         if: failure()
         run: |
-          echo '## Build Error' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -80 build-output.txt >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "::error::BUILD_ERROR_START $(tail -60 build-output.txt) BUILD_ERROR_END"
