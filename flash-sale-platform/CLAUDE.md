@@ -185,6 +185,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 | Saga 구현 | `/saga-pattern` | 분산 트랜잭션 |
 | 전체 검사 | `/check-all` | 빌드+테스트+린트+아키텍처 |
 | 문서 작성 | `/document` | ADR, API 문서 |
+| 성능 테스트 | `/performance-test` | k6 부하 테스트 작성/실행 |
 
 ## 자가 리뷰 체크리스트 (코드 제출 전 필수)
 
