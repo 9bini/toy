@@ -25,6 +25,9 @@ dependencies {
     api("tools.jackson.module:jackson-module-kotlin")
     api(libs.jackson.module.blackbird)
 
+    // AOP: @EnableResilientMethods, @Retryable 등 Spring 네이티브 Resilience 지원
+    api("org.springframework.boot:spring-boot-starter-aop")
+
     // 내부 구현 전용 (서비스에서 직접 접근 불필요)
     implementation(libs.redisson.spring.boot.starter)
     implementation(libs.logstash.logback.encoder)

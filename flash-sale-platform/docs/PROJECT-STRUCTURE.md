@@ -557,5 +557,6 @@ management:
 - [새 Kafka Consumer 추가](guides/add-kafka-consumer.md)
 - [새 Redis 연산 추가](guides/add-redis-operation.md)
 - [새 DB 엔티티 추가](guides/add-db-entity.md)
+- [Resilience 패턴 적용](guides/add-resilience-pattern.md)
 - [Saga 패턴 구현](guides/add-saga-pattern.md)
 - [테스트 작성](guides/add-test.md)

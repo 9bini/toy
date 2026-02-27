@@ -32,6 +32,7 @@ argument-hint: [--fix]
 - GlobalScope 사용
 - runBlocking 사용 (테스트 제외)
 - withTimeout 없는 외부 호출
+- 네트워크 호출(HTTP, Kafka)에 @Retryable 미적용
 - deprecated API 사용 (Spring Boot/Kotlin/라이브러리 최신 버전 기준)
 
 ### 5. 결과 요약

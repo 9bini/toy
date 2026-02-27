@@ -252,7 +252,7 @@ jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"} * 100
 # 6. 활성 스레드 수
 jvm_threads_live_threads
 
-# 8. GC 일시 중지 시간
+# 7. GC 일시 중지 시간
 rate(jvm_gc_pause_seconds_sum[5m])
 ```
 
