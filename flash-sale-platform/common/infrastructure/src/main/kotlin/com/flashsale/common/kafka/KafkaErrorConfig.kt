@@ -3,7 +3,7 @@ package com.flashsale.common.kafka
 import com.flashsale.common.logging.Log
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.TopicPartition
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.core.KafkaOperations
@@ -22,7 +22,7 @@ import org.springframework.util.backoff.FixedBackOff
  * 각 서비스에서 별도 ErrorHandler를 등록하지 않으면 이 설정이 적용된다.
  */
 @Configuration
-@ConditionalOnClass(KafkaOperations::class)
+@ConditionalOnBean(KafkaOperations::class)
 class KafkaErrorConfig {
     companion object : Log
 
