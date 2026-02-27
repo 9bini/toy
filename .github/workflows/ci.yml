@@ -39,14 +39,16 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build (lint + compile + test)
-        run: ./gradlew build --stacktrace
+        run: ./gradlew build --stacktrace 2>&1 | tee build-output.txt; exit ${PIPESTATUS[0]}
 
-      - name: Upload test reports
+      - name: Show build error (last 100 lines)
+        if: failure()
+        run: tail -100 build-output.txt
+
+      - name: Upload build output
         if: failure()
         uses: actions/upload-artifact@v6
         with:
-          name: test-reports
-          path: |
-            flash-sale-platform/**/build/reports/tests/
-            flash-sale-platform/**/build/reports/ktlint/
+          name: build-output
+          path: flash-sale-platform/build-output.txt
           retention-days: 7
