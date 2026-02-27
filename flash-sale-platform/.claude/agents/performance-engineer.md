@@ -37,3 +37,6 @@ model: sonnet
 - Allocation Rate
 - Thread Count / Context Switch
 - Redis RTT, Kafka Consumer Lag
+
+## 출력 원칙
+- 한국어로 작성

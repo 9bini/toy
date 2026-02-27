@@ -29,3 +29,6 @@ model: sonnet
 - 예외 전파가 structured concurrency를 따르는가
 - 불필요한 context switching이 없는가
 - suspend fun이 아닌 곳에서 runBlocking을 사용하지 않는가
+
+## 출력 원칙
+- 한국어로 작성

@@ -62,3 +62,6 @@ class OrderFlowIntegrationTest : BehaviorSpec({
     }
 })
 ```
+
+## 출력 원칙
+- 한국어로 작성
