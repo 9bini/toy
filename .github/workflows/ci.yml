@@ -39,14 +39,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build (lint + compile + test)
-        run: ./gradlew build 2>&1 | tee build-output.txt; exit ${PIPESTATUS[0]}
-
-      - name: Show build error
-        if: failure()
-        run: |
-          grep -B1 -A5 'FAILED\|Newline\|Expected\|style violations' build-output.txt | head -40 | while IFS= read -r line; do
-            echo "::error::$line"
-          done
+        run: ./gradlew build
 
       - name: Upload test reports
         if: failure()

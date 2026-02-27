@@ -72,7 +72,8 @@ class GlobalErrorHandler(
                 timestamp = Instant.now(),
             )
 
-        return ServerResponse.status(status)
+        return ServerResponse
+            .status(status)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(errorResponse)
     }
