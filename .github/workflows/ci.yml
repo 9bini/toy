@@ -39,12 +39,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build (lint + compile + test)
-        run: ./gradlew build
+        run: ./gradlew build --stacktrace
 
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v6
         with:
           name: test-reports
-          path: flash-sale-platform/**/build/reports/tests/
+          path: |
+            flash-sale-platform/**/build/reports/tests/
+            flash-sale-platform/**/build/reports/ktlint/
           retention-days: 7
