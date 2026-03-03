@@ -7,4 +7,6 @@ plugins {
 
 dependencies {
     implementation(project(":common:infrastructure"))
+
+    testImplementation(testFixtures(project(":common:infrastructure")))
 }

@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.spring) apply false
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
-    alias(libs.plugins.ktlint) apply false
+    // ktlint 플러그인: plugins-artifacts.gradle.org 접근 불가 시 비활성화
+    // alias(libs.plugins.ktlint) apply false
 }
 
 allprojects {
@@ -17,7 +18,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    // apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
         jvmToolchain(21)

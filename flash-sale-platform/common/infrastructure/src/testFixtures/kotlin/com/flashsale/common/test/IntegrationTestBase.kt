@@ -49,6 +49,24 @@ abstract class IntegrationTestBase {
         @JvmStatic
         @DynamicPropertySource
         fun configureProperties(registry: DynamicPropertyRegistry) {
+            registerProperties(registry)
+        }
+
+        /**
+         * Kotest companion object 패턴에서 사용 가능한 프로퍼티 등록.
+         *
+         * Kotest DescribeSpec/FunSpec과 IntegrationTestBase를 동시에 상속할 수 없으므로
+         * `companion object : IntegrationTestBase()`로 사용 시 @DynamicPropertySource가
+         * Spring에 의해 발견되지 않는다. 이 경우 테스트 companion에서 직접 호출:
+         * ```kotlin
+         * companion object : IntegrationTestBase() {
+         *     @JvmStatic @DynamicPropertySource
+         *     fun properties(registry: DynamicPropertyRegistry) = registerProperties(registry)
+         * }
+         * ```
+         */
+        @JvmStatic
+        fun registerProperties(registry: DynamicPropertyRegistry) {
             // Redis
             registry.add("spring.data.redis.host") { redis.host }
             registry.add("spring.data.redis.port") { redis.getMappedPort(6379) }
