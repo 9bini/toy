@@ -43,3 +43,8 @@ tests/performance/k6/results/
 
 # GC 로그
 gc*.log
+
+# Claude Code (세션별 임시 데이터)
+.claude/agent-memory/
+.claude/worktrees/
+.claude/settings.local.json

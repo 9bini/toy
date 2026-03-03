@@ -1,0 +1,13 @@
+{
+  "$schema": "RedTeam 오탐 억제 목록 — 검토 후 의도적으로 허용한 항목",
+  "suppressions": [
+    {
+      "id": "example-suppression",
+      "category": "RT-06",
+      "file": "docker-compose.yml",
+      "reason": "개발 환경 전용 설정, 프로덕션에서는 환경 변수로 주입",
+      "reviewer": "",
+      "date": ""
+    }
+  ]
+}
