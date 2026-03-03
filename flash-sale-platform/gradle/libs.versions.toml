@@ -9,7 +9,7 @@ ktlint-gradle = "14.0.1"
 coroutines = "1.10.2"
 
 # Logging
-kotlin-logging = "7.0.13"
+kotlin-logging = "8.0.01"
 logstash-logback = "9.0"
 
 # Redis
