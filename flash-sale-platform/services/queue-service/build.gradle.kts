@@ -9,4 +9,6 @@ dependencies {
     implementation(project(":common:infrastructure"))
 
     testImplementation(testFixtures(project(":common:infrastructure")))
+
+    "integrationTestImplementation"(testFixtures(project(":common:infrastructure")))
 }

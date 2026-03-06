@@ -32,6 +32,14 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+        jvmArgs("-Dfile.encoding=UTF-8")
+        // Kotest uses Korean test names; disable HTML reports to avoid
+        // filesystem encoding issues on POSIX-locale systems.
+        reports.html.required.set(false)
+    }
+
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
     }
 
     dependencies {
@@ -53,6 +61,29 @@ subprojects {
 
             "testImplementation"("org.springframework.boot:spring-boot-starter-test")
             "testImplementation"("io.projectreactor:reactor-test")
+        }
+
+        // integrationTest source set for Testcontainers-based tests (requires Docker)
+        val sourceSets = the<SourceSetContainer>()
+        val integrationTest by sourceSets.creating {
+            compileClasspath += sourceSets["main"].output + sourceSets["test"].output
+            runtimeClasspath += sourceSets["main"].output + sourceSets["test"].output
+        }
+
+        configurations[integrationTest.implementationConfigurationName].extendsFrom(
+            configurations["testImplementation"],
+        )
+        configurations[integrationTest.runtimeOnlyConfigurationName].extendsFrom(
+            configurations["testRuntimeOnly"],
+        )
+
+        tasks.register<Test>("integrationTest") {
+            description = "Run integration tests (requires Docker)"
+            group = "verification"
+            testClassesDirs = integrationTest.output.classesDirs
+            classpath = integrationTest.runtimeClasspath
+            useJUnitPlatform()
+            shouldRunAfter(tasks.named("test"))
         }
     }
 }
