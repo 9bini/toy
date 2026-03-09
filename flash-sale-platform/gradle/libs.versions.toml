@@ -21,7 +21,7 @@ flyway = "12.0.3"
 postgresql-jdbc = "42.7.10"
 
 # Testing
-kotest = "6.1.4"
+kotest = "6.1.5"
 mockk = "1.14.9"
 testcontainers = "2.0.3"
 redis-testcontainers = "2.2.4"
